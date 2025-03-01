@@ -1,15 +1,66 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, SafeAreaView, View } from 'react-native';
+import { StyleSheet, Text, SafeAreaView, View,Image, FlatList } from 'react-native';
 import { styles } from './styles/styles';
-
 
 
 export default function App() {
   return (
     <SafeAreaView style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
+        <View style={[styles.contain]}>
+          <Image source={require("./assets/icon.png")}></Image>
+          <Text>Product Name</Text>
+          <Text>Price</Text>
+          <Text>Rating</Text>
+          <button>cart icon here</button>
+        </View>
+
+        <View style={[styles.contain]}>
+          <Image source={require("./assets/icon.png")}></Image>
+          <Text>Product Name</Text>
+          <Text>Price</Text>
+          <Text>Rating</Text>
+          <button>cart icon here</button>
+        </View>
+
+        <View style={[styles.contain]}>
+          <Image source={require("./assets/icon.png")}></Image>
+          <Text>Product Name</Text>
+          <Text>Price</Text>
+          <Text>Rating</Text>
+          <button>cart icon here</button>
+        </View>
+
+        <View style={[styles.contain]}>
+          <Image source={require("./assets/icon.png")}></Image>
+          <Text>Product Name</Text>
+          <Text>Price</Text>
+          <Text>Rating</Text>
+          <button>cart icon here</button>
+        </View>
+
+        <View style={[styles.contain]}>
+          <Image source={require("./assets/icon.png")}></Image>
+          <Text>Product Name</Text>
+          <Text>Price</Text>
+          <Text>Rating</Text>
+          <button>cart icon here</button>
+        </View>
+        
+        <View style={[styles.contain]}>
+          <Image source={require("./assets/icon.png")}></Image>
+          <Text>Product Name</Text>
+          <Text>Price</Text>
+          <Text>Rating</Text>
+          <button>cart icon here</button>
+        </View>
+        
+        <View style={[styles.contain]}>
+          <Image source={require("./assets/icon.png")}></Image>
+          <Text>Product Name</Text>
+          <Text>Price</Text>
+          <Text>Rating</Text>
+          <button>cart icon here</button>
+        </View>
     </SafeAreaView>
   );
 }
-

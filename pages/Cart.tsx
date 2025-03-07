@@ -1,37 +1,13 @@
-import React, { useState } from 'react';
-import { View, Text, Image, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import React from 'react';
+import { View, Text, Image, FlatList, Pressable } from 'react-native';
+import { useCart } from './CartContext';
+import { styles } from './styles'; // 
 
-// Define the navigation stack types
-type RootStackParamList = {
-  Home: undefined;
-  Cart: undefined;
-  Checkout: undefined;
-};
+const Cart = ({ navigation }) => {
+  const { cartItems, updateQuantity, removeFromCart } = useCart();
 
-// Define props for the Cart screen
-type CartScreenProps = NativeStackScreenProps<RootStackParamList, 'Cart'>;
-
-const initialCartItems = [
-  { id: '1', name: "Product 1", price: 10, quantity: 1, image: require("../assets/icon.png") },
-  { id: '2', name: "Product 2", price: 15, quantity: 1, image: require("../assets/icon.png") },
-  { id: '3', name: "Product 3", price: 20, quantity: 1, image: require("../assets/icon.png") }
-];
-
-const Cart: React.FC<CartScreenProps> = ({ navigation }) => {
-  const [cartItems, setCartItems] = useState(initialCartItems);
-
-  const updateQuantity = (id: string, amount: number) => {
-    setCartItems((prevItems) =>
-      prevItems.map((item) =>
-        item.id === id ? { ...item, quantity: Math.max(1, item.quantity + amount) } : item
-      )
-    );
-  };
-
-  const removeItem = (id: string) => {
-    setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
-  };
+  
+  const totalPrice = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   return (
     <View style={styles.container}>
@@ -43,47 +19,57 @@ const Cart: React.FC<CartScreenProps> = ({ navigation }) => {
             <Image source={item.image} style={styles.image} />
             <View style={styles.details}>
               <Text style={styles.name}>{item.name}</Text>
-              <Text style={styles.price}>Price: ${item.price}</Text>
-              <Text style={styles.totalPrice}>Total: ${(item.price * item.quantity).toFixed(2)}</Text>
+              <Text style={styles.price}>Price: ₱{item.price.toFixed(2)}</Text>
+              <Text style={styles.totalPrice}>Total: ₱{(item.price * item.quantity).toFixed(2)}</Text>
             </View>
             <View style={styles.controls}>
-              <TouchableOpacity onPress={() => updateQuantity(item.id, -1)} style={styles.button}>
+              {/* ➖ Decrease Quantity Button */}
+              <Pressable
+                onPress={() => updateQuantity(item.id, -1)}
+                style={({ pressed }) => [styles.button, pressed && { backgroundColor: '#4b00b5' }]}
+              >
                 <Text style={styles.buttonText}>➖</Text>
-              </TouchableOpacity>
+              </Pressable>
+
               <Text style={styles.quantity}>{item.quantity}</Text>
-              <TouchableOpacity onPress={() => updateQuantity(item.id, 1)} style={styles.button}>
+
+              {/* ➕ Increase Quantity Button */}
+              <Pressable
+                onPress={() => updateQuantity(item.id, 1)}
+                style={({ pressed }) => [styles.button, pressed && { backgroundColor: '#4b00b5' }]}
+              >
                 <Text style={styles.buttonText}>➕</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => removeItem(item.id)} style={styles.removeButton}>
+              </Pressable>
+
+              {/* 🗑 Remove Item Button */}
+              <Pressable
+                onPress={() => removeFromCart(item.id)}
+                style={({ pressed }) => [styles.removeButton, pressed && { backgroundColor: '#cc0000' }]}
+              >
                 <Text style={styles.removeText}>🗑 Remove</Text>
-              </TouchableOpacity>
+              </Pressable>
             </View>
           </View>
         )}
       />
-      <TouchableOpacity onPress={() => navigation.navigate('Checkout')} style={styles.checkoutButton}>
+
+      {/* 🏷️ Total Price */}
+      <View style={{ padding: 15, backgroundColor: '#fff', borderRadius: 10, marginTop: 10, elevation: 3 }}>
+        <Text style={{ fontSize: 18, fontWeight: 'bold', textAlign: 'center' }}>
+          Total Price: ₱{totalPrice.toFixed(2)}
+        </Text>
+      </View>
+
+      {/* ✅ Proceed to Checkout Button */}
+      <Pressable
+        onPress={() => navigation.navigate('Checkout')}
+        style={({ pressed }) => [styles.checkoutButton, pressed && { backgroundColor: '#000' }]}
+      >
         <Text style={styles.checkoutText}>Proceed to Checkout</Text>
-      </TouchableOpacity>
+      </Pressable>
     </View>
   );
 };
 
 export default Cart;
 
-const styles = StyleSheet.create({
-  container: { flex: 1, padding: 10, backgroundColor: '#f5f5f5' },
-  itemContainer: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#fff', padding: 10, borderRadius: 10, marginBottom: 10, elevation: 3 },
-  image: { width: 50, height: 50, marginRight: 10 },
-  details: { flex: 1 },
-  name: { fontSize: 16, fontWeight: 'bold' },
-  price: { fontSize: 14, color: '#666' },
-  totalPrice: { fontSize: 14, fontWeight: 'bold', marginTop: 5 },
-  controls: { flexDirection: 'row', alignItems: 'center' },
-  button: { backgroundColor: '#6200ea', padding: 8, borderRadius: 5, marginHorizontal: 5 },
-  buttonText: { color: '#fff', fontSize: 16, fontWeight: 'bold' },
-  quantity: { fontSize: 16, fontWeight: 'bold' },
-  removeButton: { backgroundColor: '#ff4d4d', padding: 8, borderRadius: 5, marginLeft: 10 },
-  removeText: { color: '#fff', fontSize: 12 },
-  checkoutButton: { backgroundColor: '#28a745', padding: 12, borderRadius: 5, alignItems: 'center', marginTop: 10 },
-  checkoutText: { color: '#fff', fontSize: 16, fontWeight: 'bold' },
-});

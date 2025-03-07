@@ -6,6 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import Home from './pages/Home';
 import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
+import { CartProvider } from './pages/CartContext'; // Import the context provider
 
 // Define the navigation types
 type RootStackParamList = {
@@ -21,7 +22,7 @@ type NavigationProps = NativeStackNavigationProp<RootStackParamList, 'Home'>;
 
 // Custom Cart Button Component
 const CartButton = () => {
-  const navigation = useNavigation<NavigationProps>(); // Use the correct typed navigation
+  const navigation = useNavigation<NavigationProps>(); 
 
   return (
     <TouchableOpacity onPress={() => navigation.navigate('Cart')} style={{ marginRight: 15 }}>
@@ -32,22 +33,30 @@ const CartButton = () => {
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen 
-          name="Home" 
-          component={Home} 
-          options={{
-            title: 'Marble Shop',
-            headerStyle: { backgroundColor: 'black' },
-            headerTintColor: '#fff',
-            headerTitleStyle: { fontWeight: 'bold', fontSize: 22 },
-            headerRight: () => <CartButton />, // Use the custom button
-          }} 
-        />
-        <Stack.Screen name="Cart" component={Cart} options={{ title: 'Your Cart' }} />
-        <Stack.Screen name="Checkout" component={Checkout} options={{ title: 'Checkout' }} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <CartProvider>
+      <NavigationContainer>
+        <Stack.Navigator>
+          <Stack.Screen 
+            name="Home" 
+            component={Home} 
+            options={{
+              title: 'Marble Shop',
+              headerStyle: { backgroundColor: 'black' },
+              headerTintColor: '#fff',
+              headerTitleStyle: { fontWeight: 'bold', fontSize: 22 },
+              headerRight: () => <CartButton />, 
+            }} 
+          />
+          <Stack.Screen name="Cart" component={Cart} options={{ title: 'Your Cart',
+          headerStyle: { backgroundColor: 'black' },
+              headerTintColor: '#fff',
+              headerTitleStyle: { fontWeight: 'bold', fontSize: 22 } }} />
+          <Stack.Screen name="Checkout" component={Checkout} options={{ title: 'Checkout',
+          headerStyle: { backgroundColor: 'black' },
+              headerTintColor: '#fff',
+              headerTitleStyle: { fontWeight: 'bold', fontSize: 22 } }} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </CartProvider>
   );
 }

@@ -1,55 +1,42 @@
-import React, { useState } from 'react';
-import { Text, SafeAreaView, View, Image, FlatList, TouchableOpacity, TextInput } from 'react-native';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import React from 'react';
+import { Text, SafeAreaView, View, Image, FlatList, TouchableOpacity } from 'react-native';
 import { styles } from './styles';
-
-// Define the stack navigation types
-type RootStackParamList = {
-  Home: undefined;
-  Cart: undefined;
-  Checkout: undefined;
-};
-
-// Type definition for screen props
-type HomeScreenProps = NativeStackScreenProps<RootStackParamList, 'Home'>;
+import { useCart } from './CartContext';
 
 const products = [
-  { id: '1', name: "Product 1", price: "$10", rating: "⭐️⭐️⭐️⭐️", image: require("../assets/icon.png") },
-  { id: '2', name: "Product 2", price: "$15", rating: "⭐️⭐️⭐️⭐️⭐️", image: require("../assets/icon.png") },
-  { id: '3', name: "Product 3", price: "$20", rating: "⭐️⭐️⭐️", image: require("../assets/icon.png") },
-  { id: '4', name: "Product 4", price: "$25", rating: "⭐️⭐️⭐️⭐️", image: require("../assets/icon.png") }
+  { id: '1', name: "Black Marble", price: 3000, rating: "4⭐️", image: require("../assets/blackmarble.jpg") },
+  { id: '2', name: "Black Marble 2", price: 3000, rating: "5⭐️", image: require("../assets/BlckMarble.jpg") },
+  { id: '3', name: "Green Marble (gold)", price: 8000, rating: "5⭐️", image: require("../assets/greenmarble.png") },
+  { id: '4', name: "Purple Marble (gold)", price: 8000, rating: "5⭐️", image: require("../assets/prplmrbl.jpg") },
+  { id: '5', name: "White Marble", price: 2500, rating: "3⭐️", image: require("../assets/whitemarble.jpg") },
+  { id: '6', name: "White Marble (size x2)", price: 4800, rating: "4⭐️", image: require("../assets/whitemarble.jpg") }
 ];
 
-const Home: React.FC<HomeScreenProps> = ({ navigation }) => {
-  const [searchQuery, setSearchQuery] = useState('');
-  const filteredProducts = products.filter(product => 
-    product.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+const Home = () => {
+  console.log("Rendering Home.tsx..."); 
+  const { cartItems, addToCart } = useCart(); 
 
   return (
     <SafeAreaView style={styles.container}>
-      <TextInput 
-        style={{ height: 40, borderColor: 'gray', borderWidth: 1, margin: 10, paddingHorizontal: 10 }}
-        placeholder="Search products..."
-        value={searchQuery}
-        onChangeText={setSearchQuery}
-      />
       <FlatList
-        data={filteredProducts}
+        data={products}
         keyExtractor={(item) => item.id}
         numColumns={2}
         columnWrapperStyle={{ justifyContent: 'space-between' }}
-        renderItem={({ item }) => (
-          <View style={[styles.contain, { flex: 1, margin: 5 }]}> 
-            <Image source={item.image} style={{ width: 50, height: 50 }} />
-            <Text>{item.name}</Text>
-            <Text>{item.price}</Text>
-            <Text>{item.rating}</Text>
-            <TouchableOpacity>
-              <Text>🛒 Add to Cart</Text>
-            </TouchableOpacity>
-          </View>
-        )}
+        renderItem={({ item }) => {
+          console.log("Rendering product:", item.name); // ✅ Debugging
+          return (
+            <View style={[styles.contain, { flex: 1, margin: 5 }]}>
+              <Image source={item.image} style={{ width: 50, height: 50 }} />
+              <Text>{item.name}</Text>
+              <Text>₱{item.price}</Text>
+              <Text>{item.rating}</Text>
+              <TouchableOpacity onPress={() => addToCart(item)}>
+                <Text>Add to Cart</Text>
+              </TouchableOpacity>
+            </View>
+          );
+        }}
       />
     </SafeAreaView>
   );
